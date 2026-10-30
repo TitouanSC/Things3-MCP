@@ -49,8 +49,9 @@ type TaskBackend interface {
     CreateProject(ctx, NewProject) (Project, error)
     UpdateTask(ctx, id, TaskPatch) (Task, error)
     UpdateProject(ctx, id, ProjectPatch) (Project, error)
-    SetTaskStatus(ctx, id, Status) error
-    MoveToTrash(ctx, id) error
+    SetTaskStatus(ctx, id, Status) (Task, error)
+    MoveToTrash(ctx, id) error  // ErrUnsupported sans la capacité Trash
+    ShowInApp(ctx, id) error    // ErrUnsupported sans la capacité ShowInApp
 }
 
 type Capabilities struct {
@@ -102,6 +103,10 @@ Règles associées :
   build tag et une exécution manuelle.
 - **Outils conditionnés aux capacités** : un outil non supporté n'est pas
   enregistré, plutôt qu'enregistré puis en échec.
+- **Références vérifiées par le backend** : un projet, une aire, un heading ou
+  un tag inexistant renvoie `ErrNotFound`. Le URL scheme les ignore en silence,
+  donc le backend local devra les vérifier lui-même via SQLite. La suite de
+  contrat l'impose.
 
 ## Conséquences
 
