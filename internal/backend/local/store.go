@@ -55,9 +55,11 @@ func openStore(path string) (*store, error) {
 		return nil, err
 	}
 	db.SetMaxOpenConns(4)
-	if err := db.Ping(); err != nil {
-		db.Close()
-		return nil, fmt.Errorf("%w: cannot open the Things database: %v", domain.ErrUnavailable, err)
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := db.PingContext(ctx); err != nil {
+		_ = db.Close()
+		return nil, fmt.Errorf("%w: cannot open the Things database: %w", domain.ErrUnavailable, err)
 	}
 	return &store{db: db}, nil
 }

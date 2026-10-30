@@ -14,7 +14,7 @@ import (
 var fixedNow = time.Date(2026, 10, 30, 9, 0, 0, 0, time.UTC)
 
 func TestContract(t *testing.T) {
-	backendtest.Run(t, func(t *testing.T) backendtest.Harness {
+	backendtest.Run(t, func(_ *testing.T) backendtest.Harness {
 		b := New(WithClock(func() time.Time { return fixedNow }))
 		return backendtest.Harness{
 			Backend: b,
@@ -26,7 +26,7 @@ func TestContract(t *testing.T) {
 }
 
 func TestContractWithoutTrash(t *testing.T) {
-	backendtest.Run(t, func(t *testing.T) backendtest.Harness {
+	backendtest.Run(t, func(_ *testing.T) backendtest.Harness {
 		b := New(WithCapabilities(backend.Capabilities{ReturnsIDs: true}))
 		return backendtest.Harness{Backend: b, Area: b.SeedArea("A"), Tag: b.SeedTag("t1", ""), Tag2: b.SeedTag("t2", "")}
 	})

@@ -87,7 +87,7 @@ func (s *server) toolError(tool string, err error) error {
 	case errors.Is(err, domain.ErrValidation), errors.Is(err, domain.ErrUnsupported):
 		return err
 	case errors.Is(err, domain.ErrUnavailable):
-		return errors.New("Things is unavailable right now; try again later")
+		return errors.New("the Things app is unavailable right now; try again later")
 	case errors.Is(err, context.Canceled), errors.Is(err, context.DeadlineExceeded):
 		return errors.New("the request was canceled or timed out")
 	}

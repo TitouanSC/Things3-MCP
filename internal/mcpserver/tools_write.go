@@ -10,8 +10,6 @@ import (
 	"github.com/TitouanSC/Things3-MCP/internal/domain"
 )
 
-const whenHelp = "today, evening, tomorrow, anytime, someday or YYYY-MM-DD; append @HH:MM (24h) to add a reminder, e.g. 2026-11-03@09:30"
-
 // CreateTaskInput describes create_task.
 type CreateTaskInput struct {
 	Title     string   `json:"title" jsonschema:"single line, max 4000 characters"`

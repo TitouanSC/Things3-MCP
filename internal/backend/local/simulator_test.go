@@ -372,4 +372,3 @@ func (s *simulator) update(id string, q url.Values) {
 	}
 	set("userModificationDate", s.stamp())
 }
-

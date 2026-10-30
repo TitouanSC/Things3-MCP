@@ -19,7 +19,9 @@ type ExecRunner struct{}
 // Run implements Runner. The error deliberately omits the arguments and the
 // command output, which may contain the auth token or task content.
 func (ExecRunner) Run(ctx context.Context, name string, args ...string) error {
-	if err := exec.CommandContext(ctx, name, args...).Run(); err != nil {
+	// The command name is always a constant ("open" or "osascript") chosen by
+	// this package; arguments are passed without a shell.
+	if err := exec.CommandContext(ctx, name, args...).Run(); err != nil { //nolint:gosec // G204: see above
 		return fmt.Errorf("%s: %w", name, err)
 	}
 	return nil

@@ -29,8 +29,9 @@ var version = "dev"
 
 func main() {
 	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt, syscall.SIGTERM)
-	defer stop()
-	if err := run(ctx, os.Args[1:], os.Getenv, os.Stderr); err != nil {
+	err := run(ctx, os.Args[1:], os.Getenv, os.Stderr)
+	stop()
+	if err != nil {
 		fmt.Fprintln(os.Stderr, "things-mcp:", err)
 		os.Exit(1)
 	}
