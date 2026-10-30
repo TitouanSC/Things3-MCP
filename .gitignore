@@ -1,0 +1,24 @@
+# Binaries
+/bin/
+/dist/
+*.exe
+*.test
+
+# Coverage
+*.out
+coverage.*
+
+# Local configuration and secrets: never commit
+.env
+.env.*
+!.env.example
+
+# Local copies of a Things database
+*.sqlite
+*.sqlite-shm
+*.sqlite-wal
+
+# Editors / OS
+.DS_Store
+.idea/
+.vscode/
