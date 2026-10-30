@@ -65,8 +65,26 @@ Trois implémentations :
 | Adaptateur | Lecture | Écriture | Usage |
 |---|---|---|---|
 | `FakeBackend` | mémoire | mémoire | tests unitaires et de contrat |
-| `LocalMacBackend` | SQLite `mode=ro` | URL scheme (`open -g`), AppleScript pour la corbeille | stdio, macOS |
+| `LocalMacBackend` | SQLite `mode=ro` | URL scheme (`open -g`) et AppleScript (`osascript`) | stdio, macOS |
 | `CloudBackend` | état synchronisé par `things-cloud-sdk` | commits via le SDK | HTTP hébergé |
+
+### Mécanismes du backend local (décidé le 2026-10-30)
+
+Le `LocalMacBackend` combine trois mécanismes, chacun là où il est le meilleur :
+
+| Mécanisme | Usage | Pourquoi |
+|---|---|---|
+| **SQLite** (lecture seule) | toutes les lectures | rapide, aucune permission d'automatisation |
+| **URL scheme** `things:///` | créations riches (checklists, headings, `json`) et mises à jour | officiel, le plus complet pour l'écriture |
+| **AppleScript** (`osascript`) | mise à la corbeille, créations simples qui doivent renvoyer l'ID | seul moyen de mettre à la corbeille. Réponse synchrone avec l'ID créé. |
+
+Contraintes liées à AppleScript :
+
+- permission macOS « Automatisation » à accorder une fois ;
+- aucune valeur insérée dans le texte du script : les valeurs passent en
+  arguments (`on run argv`), avec validation stricte du format des ID, contre
+  l'injection ;
+- jamais de `empty trash` ni de suppression définitive.
 
 Règles associées :
 
@@ -92,6 +110,9 @@ Règles associées :
 - (+) La CI (Linux) teste toute la logique MCP sans macOS ni compte Things.
 - (−) L'interface doit viser le plus petit dénominateur commun. Les
   fonctionnalités propres à un seul backend passent par `Capabilities`.
-- (−) En local, `CreateTask` doit retrouver l'ID par relecture SQLite (le URL
-  scheme ne le renvoie pas sans x-callback). Il faut gérer le délai et
-  l'ambiguïté (titres identiques), et le documenter.
+- (−) En local, les créations riches via URL scheme ne renvoient pas l'ID. Il
+  faut le retrouver par relecture SQLite (délai, ambiguïté si deux titres sont
+  identiques). Les créations simples passent par AppleScript, qui renvoie l'ID
+  directement.
+- (−) Le mode local dépend de la permission « Automatisation » de macOS, à
+  documenter dans le README.
