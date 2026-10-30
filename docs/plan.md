@@ -1,8 +1,6 @@
 # Plan détaillé des phases
 
-_Hypothèse : option A de l'[ADR 001](adr/001-langage-et-structure.md) (Go). Si
-TypeScript est retenu, les étapes restent les mêmes mais les outils changent
-(vitest, eslint, tsc strict)._
+_Langage retenu : Go ([ADR 001](adr/001-langage-et-structure.md), accepté le 2026-10-30)._
 
 Chaque phase se termine par un résumé, la liste de ce qui reste, et un arrêt
 en attente de feu vert. Commits au format Conventional Commits.

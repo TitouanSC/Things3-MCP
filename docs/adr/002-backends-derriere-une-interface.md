@@ -1,6 +1,6 @@
 # ADR 002 : Deux backends derrière une interface `TaskBackend`
 
-- **Statut** : Proposé (en attente de validation)
+- **Statut** : Accepté (2026-10-30)
 - **Date** : 2026-10-29
 
 ## Contexte

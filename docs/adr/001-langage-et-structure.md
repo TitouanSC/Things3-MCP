@@ -1,6 +1,6 @@
 # ADR 001 : Langage et structure du dépôt
 
-- **Statut** : Proposé (en attente de validation)
+- **Statut** : Accepté (2026-10-30)
 - **Date** : 2026-10-29
 
 ## Contexte
@@ -57,7 +57,7 @@ maintenir soi-même.
 image Docker plus lourde, des erreurs plus difficiles à remonter. C'est de la
 complexité accidentelle.
 
-## Décision (proposée)
+## Décision
 
 **Option A : Go.** Le critère décisif est le risque sur les données : réutiliser
 une implémentation testée du protocole plutôt que la réécrire. Pour un dossier
