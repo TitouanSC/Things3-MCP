@@ -76,8 +76,25 @@ Le `LocalMacBackend` combine trois mécanismes, chacun là où il est le meilleu
 | Mécanisme | Usage | Pourquoi |
 |---|---|---|
 | **SQLite** (lecture seule) | toutes les lectures | rapide, aucune permission d'automatisation |
-| **URL scheme** `things:///` | créations riches (checklists, headings, `json`) et mises à jour | officiel, le plus complet pour l'écriture |
-| **AppleScript** (`osascript`) | mise à la corbeille, créations simples qui doivent renvoyer l'ID | seul moyen de mettre à la corbeille. Réponse synchrone avec l'ID créé. |
+| **URL scheme** `things:///` | toutes les créations (`add`, `json`) et mises à jour | officiel, le plus complet pour l'écriture |
+| **AppleScript** (`osascript`) | mise à la corbeille | seul moyen de mettre à la corbeille |
+
+**Révision du 2026-10-30, à l'implémentation.** Il était prévu de créer les
+tâches simples via AppleScript pour récupérer l'ID directement. J'y ai renoncé :
+toutes les créations passent par le URL scheme, puis l'ID est relu dans
+SQLite (titre et date de création postérieure au début de la requête, avec un
+délai borné). Raisons :
+
+- **une seule écriture, atomique**, avec toutes les fonctionnalités
+  (checklist, heading, rappel), là où AppleScript aurait imposé une création
+  partielle suivie d'une mise à jour ;
+- **la permission « Automatisation » reste limitée à la corbeille**, une action
+  rare et volontaire ;
+- **un seul chemin de création à tester et à maintenir.**
+
+Conséquence : `ReturnsIDs = false`. L'ID est renvoyé dans le cas normal, mais
+si Things ne confirme pas à temps, la création est quand même signalée comme
+réussie, sans ID, pour éviter un doublon en cas de nouvel essai du client.
 
 Contraintes liées à AppleScript :
 
@@ -115,9 +132,8 @@ Règles associées :
 - (+) La CI (Linux) teste toute la logique MCP sans macOS ni compte Things.
 - (−) L'interface doit viser le plus petit dénominateur commun. Les
   fonctionnalités propres à un seul backend passent par `Capabilities`.
-- (−) En local, les créations riches via URL scheme ne renvoient pas l'ID. Il
-  faut le retrouver par relecture SQLite (délai, ambiguïté si deux titres sont
-  identiques). Les créations simples passent par AppleScript, qui renvoie l'ID
-  directement.
+- (−) En local, le URL scheme ne renvoie pas l'ID : il est relu dans SQLite
+  (délai borné à 5 s, ambiguïté théorique si deux éléments de même titre sont
+  créés dans la même seconde).
 - (−) Le mode local dépend de la permission « Automatisation » de macOS, à
   documenter dans le README.
