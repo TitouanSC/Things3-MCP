@@ -114,8 +114,19 @@ claude mcp add things --scope user \
 ## Développement
 
 ```sh
-go test -race ./...
+make test     # tests avec détecteur de concurrence
+make lint     # golangci-lint (config stricte, .golangci.yml)
+make vuln     # govulncheck : vulnérabilités connues des dépendances
+make secrets  # gitleaks : secrets dans tout l'historique Git
+make check    # tout ce que lance la CI
+make hooks    # active le hook pre-commit (gitleaks sur les fichiers indexés)
 ```
+
+La CI GitHub Actions ([`ci.yml`](.github/workflows/ci.yml)) lance le lint, les
+tests avec détecteur de concurrence et un seuil de couverture de 80 %, la
+compilation sur macOS, govulncheck et gitleaks sur tout l'historique. Les
+actions sont épinglées par SHA de commit, et Dependabot les tient à jour avec
+les modules Go.
 
 Les tests n'utilisent jamais ta base Things :
 - le backend local est testé sur une base SQLite synthétique ;
